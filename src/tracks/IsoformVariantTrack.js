@@ -286,7 +286,8 @@ export default class IsoformTrack {
   async getVariantData(track) {
 
     let apolloService = new ApolloService();
-    this.variantData =  await apolloService.GetFakeGlobalVariants();
+    this.variantData =  await apolloService.GetFakeWormVariantData();
+    // this.variantData =  await apolloService.GetFakeGlobalVariants();
     console.log("variant data",this.variantData);
     // let externalLocationString = track["chromosome"] + ':' + track["start"] + '..' + track["end"];
     // var dataUrl = track["isoform_url"][0] + encodeURI(track["genome"]) + track["isoform_url"][1] + encodeURI(externalLocationString) + track["isoform_url"][2];
