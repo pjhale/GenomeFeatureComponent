@@ -5,6 +5,7 @@ import VariantTrack from './tracks/VariantTrack';
 import VariantTrackGlobal from './tracks/VariantTrackGlobal';
 import * as d3 from "d3";
 import { getTranslate } from './RenderFunctions';
+import IsoformVariantTrack from "./tracks/IsoformVariantTrack";
 
 const LABEL_OFFSET = 100 ;
 /*
@@ -84,11 +85,18 @@ export default class Drawer {
         // Always take the start end of our view.
         // TODO: Lock view to always have some number of sequence (50, 100)?
         let track_height = LABEL_OFFSET ;
+        // TODO: refactor so that both come in and are re-ordered
         tracks.forEach(async function(track) {
             track["start"] = start;
             track["end"] = end;
             track["chromosome"] = chromosome;
-            if(track.type === "isoform")
+          if(track.type === "isoform_variant")
+          {
+            const isoformTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes);
+            await isoformTrack.populateTrack(track);
+            track_height += isoformTrack.DrawTrack();
+          }
+          else if(track.type === "isoform")
             {
                 const isoformTrack = new IsoformTrack(viewer, track, height, width,transcriptTypes);
                 await isoformTrack.getTrackData(track);

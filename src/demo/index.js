@@ -96,3 +96,30 @@ let configLocal3 = {
 
 
  new GenomeFeatureViewer(configLocal3, "#viewer3", 900, 400);
+
+let configGlobal4 = {
+  "locale": "global",
+  "chromosome": 5,
+  "start": 75574916,
+  "end": 75656722,
+  "tracks": [
+    {
+      "id": 12,
+      "genome":"Mus musculus",
+      "type": "isoform_variant",
+      "isoform_url": [
+        "https://agr-apollo.berkeleybop.io/apollo/track/",
+        "/All%20Genes/",
+        ".json"
+      ],
+      "variant_url": [
+        "https://agr-apollo.berkeleybop.io/apollo/vcf/",
+        "/Phenotypic%20Variants/",
+        ".json"
+      ],
+
+    },
+  ]
+};
+
+new GenomeFeatureViewer(configGlobal4, "#viewer4", 900, 400);
