@@ -38,6 +38,8 @@ export default class IsoformTrack {
         let isoform_height = 40; // height for each isoform
         let isoform_title_height = 0; // height for each isoform
         let utr_height = 10; // this is the height of the isoform running all of the way through
+        let variant_height = 10; // this is the height of the isoform running all of the way through
+        let variant_offset = 20; // this is the height of the isoform running all of the way through
         let transcript_backbone_height = 4; // this is the height of the isoform running all of the way through
         let arrow_height = 20;
         let arrow_width = 10;
@@ -70,6 +72,9 @@ export default class IsoformTrack {
             return a.name - b.name;
         });
 
+        // console.log('# of variants',this.variantData.length)
+      console.log('variants',this.variantData)
+
         let row_count = 0;
         let used_space = [];
         let fmin_display = -1;
@@ -94,6 +99,7 @@ export default class IsoformTrack {
                 });
 
                 // For each isoform..
+                let variantData = this.variantData;
                 featureChildren.forEach(function (featureChild) {
                     //
                     let featureType = featureChild.type;
@@ -145,6 +151,7 @@ export default class IsoformTrack {
                             // TODO: this is just an estimate of the length
                             let text_width = text_string.length * 2 ;
                             let feat_end;
+
 
                             // not some instances (as in reactjs?) the bounding box isn't available, so we have to guess
                             try{
@@ -239,7 +246,47 @@ export default class IsoformTrack {
                                         .datum({fmin: innerChild.fmin, fmax: innerChild.fmax});
                                 }
                             });
+
+                          // console.log('inner variants',variantData)
+                          variantData.forEach( variant => {
+                            let {type, fmax, fmin} = variant;
+                            let consequence = variant.geneLevelConsequence.values[0];
+                            console.log('type',type)
+                            if(
+                              ( fmin < fmin_display && fmax > fmin_display  )
+                              || ( fmax > fmax_display && fmin < fmax_display )
+                              || ( fmax < fmax_display && fmin > fmin_display)
+                            )
+                              if(type==='deletion'){
+                                isoform.append('rect')
+                                  .attr('class', 'variant-deletion')
+                                  .attr('x', x(fmin))
+                                  .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                                  .attr('z-index', 30)
+                                  .attr('height', variant_height)
+                                  .attr('width', x(fmax) - x(fmin))
+                                  .datum({fmin: fmin, fmax: fmax});
+                              }
+                            else{
+                                if(type==='SNV'){
+                                  isoform.append('rect')
+                                    .attr('class', 'variant-SNV')
+                                    .attr('x', x(fmin))
+                                    .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                                    .attr('z-index', 30)
+                                    .attr('height', variant_height)
+                                    .attr('width', x(fmax) - x(fmin))
+                                    .datum({fmin: fmin, fmax: fmax});
+                                }
+                              }
+                            console.log('variant',fmax-fmin)
+                          });
+
+
+
                             row_count += 1;
+
+
                         }
                         if (row_count === MAX_ROWS) {
                             // *** DANGER EDGE CASE ***/
@@ -299,11 +346,13 @@ export default class IsoformTrack {
 
   /* Method for isoformTrack service call */
     async getTrackData(track) {
-        let externalLocationString = track["chromosome"] + ':' + track["start"] + '..' + track["end"];
-        var dataUrl = track["isoform_url"][0] + encodeURI(track["genome"]) + track["isoform_url"][1] + encodeURI(externalLocationString) + track["isoform_url"][2];
-        let apolloService = new ApolloService();
-        this.trackData = await apolloService.GetIsoformTrack(dataUrl).then((data) => {
-            return data ;
-        });
+      let apolloService = new ApolloService();
+        // let externalLocationString = track["chromosome"] + ':' + track["start"] + '..' + track["end"];
+        // var dataUrl = track["isoform_url"][0] + encodeURI(track["genome"]) + track["isoform_url"][1] + encodeURI(externalLocationString) + track["isoform_url"][2];
+        // let apolloService = new ApolloService();
+        // this.trackData = await apolloService.GetIsoformTrack(dataUrl).then((data) => {
+        //     return data ;
+        // });
+      this.trackData =  await apolloService.GetFakeWormGeneData();
     }
 }

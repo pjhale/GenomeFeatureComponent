@@ -21,6 +21,18 @@ html, body {
   stroke: black;
 }
 
+.variant-SNV {
+  fill-opacity: 1.0;
+  fill: red;
+  stroke: red;
+}
+
+.variant-deletion{
+  fill-opacity: 1.0;
+  fill: purple;
+  stroke: purple;
+}
+
 .transcriptBackbone {
   fill-opacity: 1.0;
   fill: gray;
