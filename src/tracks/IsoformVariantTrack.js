@@ -215,6 +215,42 @@ export default class IsoformTrack {
 
                             featureChild.children.forEach(function (innerChild) {
                                 let innerType = innerChild.type;
+
+                              // console.log('inner variants',variantData)
+                              variantData.forEach( variant => {
+                                let {type, fmax, fmin} = variant;
+                                let consequence = variant.geneLevelConsequence.values[0];
+                                // console.log('type',type)
+                                if(
+                                  ( fmin < innerChild.fmin && fmax > innerChild.fmin  )
+                                  || ( fmax > innerChild.fmax && fmin < innerChild.fmax )
+                                  || ( fmax < innerChild.fmax && fmin > innerChild.fmin)
+                                )
+                                  if(type==='deletion'){
+                                    isoform.append('rect')
+                                      .attr('class', 'variant-deletion')
+                                      .attr('x', x(fmin))
+                                      .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                                      .attr('z-index', 30)
+                                      .attr('height', variant_height)
+                                      .attr('width', x(fmax) - x(fmin))
+                                      .datum({fmin: fmin, fmax: fmax});
+                                  }
+                                  else if(type==='SNV'){
+                                      isoform.append('rect')
+                                        .attr('class', 'variant-SNV')
+                                        .attr('x', x(fmin))
+                                        .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                                        .attr('z-index', 30)
+                                        .attr('height', variant_height)
+                                        .attr('width', x(fmax) - x(fmin))
+                                        .datum({fmin: fmin, fmax: fmax});
+                                  }
+                                // console.log('variant',fmax-fmin)
+                              });
+
+
+
                                 if (exon_feats.indexOf(innerType) >= 0) {
                                     isoform.append('rect')
                                         .attr('class', 'exon')
@@ -247,40 +283,6 @@ export default class IsoformTrack {
                                 }
                             });
 
-                          // console.log('inner variants',variantData)
-                          variantData.forEach( variant => {
-                            let {type, fmax, fmin} = variant;
-                            let consequence = variant.geneLevelConsequence.values[0];
-                            console.log('type',type)
-                            if(
-                              ( fmin < fmin_display && fmax > fmin_display  )
-                              || ( fmax > fmax_display && fmin < fmax_display )
-                              || ( fmax < fmax_display && fmin > fmin_display)
-                            )
-                              if(type==='deletion'){
-                                isoform.append('rect')
-                                  .attr('class', 'variant-deletion')
-                                  .attr('x', x(fmin))
-                                  .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
-                                  .attr('z-index', 30)
-                                  .attr('height', variant_height)
-                                  .attr('width', x(fmax) - x(fmin))
-                                  .datum({fmin: fmin, fmax: fmax});
-                              }
-                            else{
-                                if(type==='SNV'){
-                                  isoform.append('rect')
-                                    .attr('class', 'variant-SNV')
-                                    .attr('x', x(fmin))
-                                    .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
-                                    .attr('z-index', 30)
-                                    .attr('height', variant_height)
-                                    .attr('width', x(fmax) - x(fmin))
-                                    .datum({fmin: fmin, fmax: fmax});
-                                }
-                              }
-                            console.log('variant',fmax-fmin)
-                          });
 
 
 

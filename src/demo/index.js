@@ -99,9 +99,9 @@ let configLocal3 = {
 
 let configGlobal4 = {
   "locale": "global",
-  "chromosome": 5,
-  "start": 75574916,
-  "end": 75656722,
+  "chromosome": 'V',
+  "start": 20824,
+  "end": 43697,
   "tracks": [
     {
       "id": 12,
