@@ -1,5 +1,5 @@
 
-export const CONSEQUENCES_ENUM = {
+export const CONSEQUENCES_ENUM = Object.freeze({
   transcript_ablation,
   splice_acceptor_variant,
   splice_donor_variant,
@@ -36,4 +36,4 @@ export const CONSEQUENCES_ENUM = {
   regulatory_region_variant,
   feature_truncation,
   intergenic_variant,
-};
+});
