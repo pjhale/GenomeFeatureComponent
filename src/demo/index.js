@@ -105,6 +105,26 @@ let configGlobal4 = {
   "chromosome": 'V',
   "start": 20824,
   "end": 43697,
+  "transcriptTypes":  [
+    'mRNA', 'ncRNA', 'piRNA'
+    , 'lincRNA'
+    , 'miRNA'
+    , 'pre_miRNA'
+    , 'snoRNA'
+    , 'lnc_RNA'
+    , 'tRNA'
+    , 'snRNA'
+    , 'rRNA'
+    , 'ARS'
+    , 'antisense_RNA'
+
+
+    , 'C_gene_segment'
+    , 'V_gene_segment'
+    , 'pseudogene_attribute'
+    ,'snoRNA_gene'
+  ],
+  "variantTypes": ['point_mutation','MNV','Deletion','Insertion','Delins'],
   "tracks": [
     {
       "id": 12,

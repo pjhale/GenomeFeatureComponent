@@ -3,13 +3,14 @@ import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctio
 
 export default class IsoformVariantTrack {
 
-  constructor(viewer, track, height, width, transcriptTypes) {
+  constructor(viewer, track, height, width, transcriptTypes, variantTypes) {
     this.trackData = {};
     this.variantData = {};
     this.viewer = viewer;
     this.width = width;
     this.height = height;
     this.transcriptTypes = transcriptTypes;
+    this.variantTypes = variantTypes;
   }
 
   // Draw our track on the viewer
@@ -71,9 +72,6 @@ export default class IsoformVariantTrack {
       return a.name - b.name;
     });
 
-    // console.log('# of variants',this.variantData.length)
-    console.log('variants', this.variantData);
-
     let row_count = 0;
     let used_space = [];
     let fmin_display = -1;
@@ -98,7 +96,6 @@ export default class IsoformVariantTrack {
         });
 
         // For each isoform..
-        let variantData = this.variantData;
         let warningRendered = false ;
         featureChildren.forEach(function (featureChild) {
           //
