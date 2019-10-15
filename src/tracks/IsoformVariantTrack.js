@@ -1,8 +1,7 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
-import {ApolloService} from '../services/ApolloService';
 
-export default class IsoformTrack {
+export default class IsoformVariantTrack {
 
   constructor(viewer, track, height, width, transcriptTypes) {
     this.trackData = {};
