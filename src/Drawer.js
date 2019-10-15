@@ -94,7 +94,7 @@ export default class Drawer {
           if(track.type === "isoform_variant")
           {
             const isoformTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes);
-            await isoformTrack.populateTrack(track,() => new ApolloService().GetFakeWormGeneDataEgl8(),() => new ApolloService().GetFakeWormVariantDataEgl8(),);
+            await isoformTrack.populateTrack(track,() => track.isoformFunction,() => track.variantFunction);
             track_height += isoformTrack.DrawTrack();
           }
           else if(track.type === "isoform")
