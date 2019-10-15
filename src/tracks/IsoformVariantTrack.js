@@ -100,6 +100,7 @@ export default class IsoformTrack {
 
         // For each isoform..
         let variantData = this.variantData;
+        let warningRendered = false ;
         featureChildren.forEach(function (featureChild) {
           //
           let featureType = featureChild.type;
@@ -274,21 +275,18 @@ export default class IsoformTrack {
                           .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
                       }
-                      console.log('variant', fmax - fmin)
+                      // console.log('variant', fmax - fmin)
                     }
                   });
                 }
-
               });
-
-
               row_count += 1;
 
-
             }
-            if (row_count === MAX_ROWS) {
+            if (row_count === MAX_ROWS && !warningRendered) {
               // *** DANGER EDGE CASE ***/
               ++current_row;
+              warningRendered = true ;
               // let isoform = track.append("g").attr("class", "isoform")
               //     .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")")
               track.append('a')
