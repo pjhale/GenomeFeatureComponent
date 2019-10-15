@@ -159,13 +159,13 @@ let configGlobal5 = {
       "id": 12,
       "genome":"Mus musculus",
       "type": "isoform_variant",
-      "isoformFunction": apolloService.GetFakeWormGeneDataEgl8(),
+      "isoformFunction": apolloService.GetFakeFishGeneDataLbx2(),
       "isoform_url": [
         "https://agr-apollo.berkeleybop.io/apollo/track/",
         "/All%20Genes/",
         ".json"
       ],
-      "variantFunction": apolloService.GetFakeWormVariantDataEgl8(),
+      "variantFunction": apolloService.GetFakeFishVariantDataLbx2(),
       "variant_url": [
         "https://agr-apollo.berkeleybop.io/apollo/vcf/",
         "/Phenotypic%20Variants/",
@@ -177,3 +177,32 @@ let configGlobal5 = {
 };
 
 new GenomeFeatureViewer(configGlobal5, "#viewer5", 900, 500);
+
+let configGlobal6 = {
+  "locale": "global",
+  "chromosome": 'V',
+  "start": 20824,
+  "end": 43697,
+  "tracks": [
+    {
+      "id": 12,
+      "genome":"Mus musculus",
+      "type": "isoform_variant",
+      "isoformFunction": apolloService.GetFakeFishGeneDataMyl7(),
+      "isoform_url": [
+        "https://agr-apollo.berkeleybop.io/apollo/track/",
+        "/All%20Genes/",
+        ".json"
+      ],
+      "variantFunction": apolloService.GetFakeFishVariantDataMyl7(),
+      "variant_url": [
+        "https://agr-apollo.berkeleybop.io/apollo/vcf/",
+        "/Phenotypic%20Variants/",
+        ".json"
+      ],
+
+    },
+  ]
+};
+
+new GenomeFeatureViewer(configGlobal6, "#viewer6", 900, 500);
