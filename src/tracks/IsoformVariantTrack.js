@@ -1,6 +1,6 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
-import {ApolloService} from '../services/services';
+import {ApolloService} from '../services/ApolloService';
 
 export default class IsoformTrack {
 
@@ -318,38 +318,21 @@ export default class IsoformTrack {
     return row_count * isoform_height;
   }
 
-  async populateTrack(track) {
-    await this.getTrackData(track);
-    await this.getVariantData(track);
+  async populateTrack(track,geneCallbackFunction,variantCallbackFunction) {
+    await this.getTrackData(track,geneCallbackFunction);
+    await this.getVariantData(track,variantCallbackFunction);
   }
 
   // await isoformTrack.getTrackData(track);
   // track_height += isoformTrack.DrawTrack();
 
   /* Method for isoformTrack service call */
-  async getVariantData(track) {
-
-    let apolloService = new ApolloService();
-    this.variantData = await apolloService.GetFakeWormVariantData();
-    // this.variantData =  await apolloService.GetFakeGlobalVariants();
-    console.log("variant data", this.variantData);
-    // let externalLocationString = track["chromosome"] + ':' + track["start"] + '..' + track["end"];
-    // var dataUrl = track["isoform_url"][0] + encodeURI(track["genome"]) + track["isoform_url"][1] + encodeURI(externalLocationString) + track["isoform_url"][2];
-    // let apolloService = new ApolloService();
-    // this.trackData = await apolloService.GetIsoformTrack(dataUrl).then((data) => {
-    //   return data ;
-    // });
+  async getVariantData(track,callbackFunction) {
+    this.variantData = await callbackFunction();
   }
 
   /* Method for isoformTrack service call */
-  async getTrackData(track) {
-    let apolloService = new ApolloService();
-    // let externalLocationString = track["chromosome"] + ':' + track["start"] + '..' + track["end"];
-    // var dataUrl = track["isoform_url"][0] + encodeURI(track["genome"]) + track["isoform_url"][1] + encodeURI(externalLocationString) + track["isoform_url"][2];
-    // let apolloService = new ApolloService();
-    // this.trackData = await apolloService.GetIsoformTrack(dataUrl).then((data) => {
-    //     return data ;
-    // });
-    this.trackData = await apolloService.GetFakeWormGeneData();
+  async getTrackData(track,callbackFunction) {
+    this.trackData = await callbackFunction();
   }
 }

@@ -6,6 +6,7 @@ import VariantTrackGlobal from './tracks/VariantTrackGlobal';
 import * as d3 from "d3";
 import { getTranslate } from './RenderFunctions';
 import IsoformVariantTrack from "./tracks/IsoformVariantTrack";
+import {ApolloService} from "./services/ApolloService";
 
 const LABEL_OFFSET = 100 ;
 /*
@@ -93,7 +94,7 @@ export default class Drawer {
           if(track.type === "isoform_variant")
           {
             const isoformTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes);
-            await isoformTrack.populateTrack(track);
+            await isoformTrack.populateTrack(track,() => new ApolloService().GetFakeWormGeneDataEgl8(),() => new ApolloService().GetFakeWormVariantDataEgl8(),);
             track_height += isoformTrack.DrawTrack();
           }
           else if(track.type === "isoform")

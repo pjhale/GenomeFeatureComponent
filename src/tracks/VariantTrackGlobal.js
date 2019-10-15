@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { ApolloService } from '../services/services';
+import { ApolloService } from '../services/ApolloService';
 import {calculateNewTrackPosition} from '../RenderFunctions';
 
 export default class VariantTrack {
