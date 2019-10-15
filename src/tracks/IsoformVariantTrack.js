@@ -58,6 +58,21 @@ export default class IsoformVariantTrack {
     let newTrackPosition = calculateNewTrackPosition(this.viewer);
     let track = viewer.append("g").attr('transform', 'translate(0,' + newTrackPosition + ')').attr("class", "track");
 
+    // console.log('viewer',viewer);
+    // let filterTable = viewer.append("table").attr('width',"80").attr('id','filterTable');
+    // let cell = filterTable.append('tr').append('td');
+    // cell.value = "dog";
+    // cell.innerHTML = "cat";
+
+    // let filterTable = document.getElementById('filterTable');
+    // console.log('table',filterTable);
+    // for(let variantTypeIndex in this.variantTypes){
+    //   // console.log(variantType)
+    //   let row = filterTable.insertRow(0);
+    // }
+
+
+
     //need to build a new sortWeight since these can be dynamic
     let sortWeight = {};
     for (let i = 0, len = UTR_feats.length; i < len; i++) {
@@ -251,7 +266,6 @@ export default class IsoformVariantTrack {
                   variantData.forEach(variant => {
                     let {type, fmax, fmin} = variant;
                     let consequence = variant.geneLevelConsequence.values[0];
-                    // console.log('type',type)
                     if (
                       (fmin < innerChild.fmin && fmax > innerChild.fmin)
                       || (fmax > innerChild.fmax && fmin < innerChild.fmax)
@@ -267,7 +281,6 @@ export default class IsoformVariantTrack {
                           .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
                       } else if (type === 'SNV') {
-                        console.log('fmin',x(fmin),snv_points(x(fmin)))
                         isoform.append('polygon')
                           .attr('class', 'variant-SNV')
                           .attr('points', snv_points(x(fmin)))
@@ -278,7 +291,6 @@ export default class IsoformVariantTrack {
                           // .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
                       }
-                      // console.log('variant', fmax - fmin)
                     }
                   });
                 }
