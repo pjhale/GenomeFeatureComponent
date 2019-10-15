@@ -44,6 +44,11 @@ export default class IsoformVariantTrack {
     let arrow_height = 20;
     let arrow_width = 10;
     let arrow_points = '0,0 0,' + arrow_height + ' ' + arrow_width + ',' + arrow_width;
+    let snv_height = 10;
+    let snv_width = 5;
+    const snv_points = (x) => {
+      return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+    };
 
     let x = d3.scaleLinear()
       .domain([view_start, view_end])
@@ -262,13 +267,15 @@ export default class IsoformVariantTrack {
                           .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
                       } else if (type === 'SNV') {
-                        isoform.append('rect')
+                        console.log('fmin',x(fmin),snv_points(x(fmin)))
+                        isoform.append('polygon')
                           .attr('class', 'variant-SNV')
+                          .attr('points', snv_points(x(fmin)))
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
-                          .attr('height', variant_height)
-                          .attr('width', x(fmax) - x(fmin))
+                          // .attr('height', variant_height)
+                          // .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
                       }
                       // console.log('variant', fmax - fmin)
