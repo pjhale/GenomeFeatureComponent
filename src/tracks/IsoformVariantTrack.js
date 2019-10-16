@@ -1,5 +1,12 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
+import {
+  getDescriptionDimensions,
+  getVariantDescription,
+  getVariantSymbol,
+  renderVariantDescription
+} from "../services/VariantService";
+// import {description} from "d3/dist/package";
 
 export default class IsoformVariantTrack {
 
@@ -114,6 +121,10 @@ export default class IsoformVariantTrack {
           if (a.name > b.name) return 1;
           return a - b;
         });
+
+        let tooltipDiv = d3.select("body").append("div")
+          .attr("class", "tooltip")
+          .style("opacity", 0);
 
         // For each isoform..
         let warningRendered = false ;
@@ -265,23 +276,15 @@ export default class IsoformVariantTrack {
                 if (validInnerType) {
                   variantData.forEach(variant => {
                     let {type, fmax, fmin} = variant;
-                    console.log('variant',variant);
+                    // console.log('variant',variant);
 
-                    let consequence = 'UNKNOWN';
-                    if(variant.geneLevelConsequence && variant.geneLevelConsequence.length > 0){
-                      consequence = variant.geneLevelConsequence.values[0];
-                    }
-                    let symbol = variant.name ;
-                    if(variant.symbol && variant.symbol.values.length>0){
-                      symbol = variant.symbol.values[0];
-                    }
 
                     if (
                       (fmin < innerChild.fmin && fmax > innerChild.fmin)
                       || (fmax > innerChild.fmax && fmin < innerChild.fmax)
                       || (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                     ) {
-                      console.log('variant type',type)
+                      // console.log('variant type',type)
                       let drawnVariant = true;
                       if (type.toLowerCase() === 'deletion') {
                         isoform.append('rect')
@@ -327,8 +330,13 @@ export default class IsoformVariantTrack {
                         drawnVariant = false ;
                       }
                       if(drawnVariant){
-                        let symbol_string = (symbol.length>20 ? symbol.substr(0,20) : symbol).replace(/"/g,"");
-                        const symbol_string_length = symbol_string.length
+                        let symbol_string = getVariantSymbol(variant);
+                        const symbol_string_length = symbol_string.length;
+                        let description = getVariantDescription(variant);
+                        // console.log('h/w',descriptionHeight,descriptionWidth)
+                        let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
+                        let descriptionHtml = renderVariantDescription(description);
+                        // console.log(descriptionHeight,descriptionWidth);
                         isoform.append('text')
                           .attr('class', 'variantLabel')
                           .attr('fill', selected ? 'sandybrown' : 'gray')
@@ -336,6 +344,21 @@ export default class IsoformVariantTrack {
                           .attr('height', isoform_title_height)
                           .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
                           .text(symbol_string)
+                          .on("mouseover", d => {
+                            tooltipDiv.transition()
+                              .duration(200)
+                              .style("width", 'auto')
+                              .style("height", 'auto')
+                              .style("opacity", .9);
+                            tooltipDiv.html(descriptionHtml)
+                              .style("left", (d3.event.pageX) + "px")
+                              .style("top", (d3.event.pageY - 28) + "px");
+                          })
+                          .on("mouseout", function(d) {
+                            tooltipDiv.transition()
+                              .duration(500)
+                              .style("opacity", 0);
+                          })
                           .datum({fmin: featureChild.fmin});
                       }
                   }
