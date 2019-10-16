@@ -21,6 +21,13 @@ html, body {
   stroke: black;
 }
 
+.variant-insertion{
+  fill-opacity: 1.0;
+  fill: turquoise;
+  stroke: turquoise;
+}
+
+
 .variant-SNV {
   fill-opacity: 1.0;
   fill: red;
@@ -88,14 +95,21 @@ html, body {
 }
 
 .geneLabel {
-  stroke: 2px;
+  stroke-width: 2px;
   color: black;
   font-style: italic;
 }
 
 .transcriptLabel {
-  stroke: 1px;
+  stroke-width: 1px;
   color: black;
+}
+
+.variantLabel {
+  stroke-width: 1px;
+  color: black;
+  background-color: green;
+  fill: pink;
 }
 
 .axis {

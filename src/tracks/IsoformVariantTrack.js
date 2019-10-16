@@ -265,12 +265,23 @@ export default class IsoformVariantTrack {
                 if (validInnerType) {
                   variantData.forEach(variant => {
                     let {type, fmax, fmin} = variant;
-                    let consequence = variant.geneLevelConsequence.values[0];
+                    console.log('variant',variant);
+
+                    let consequence = 'UNKNOWN';
+                    if(variant.geneLevelConsequence && variant.geneLevelConsequence.length > 0){
+                      consequence = variant.geneLevelConsequence.values[0];
+                    }
+                    let symbol = variant.name ;
+                    if(variant.symbol && variant.symbol.values.length>0){
+                      symbol = variant.symbol.values[0];
+                    }
+
                     if (
                       (fmin < innerChild.fmin && fmax > innerChild.fmin)
                       || (fmax > innerChild.fmax && fmin < innerChild.fmax)
                       || (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                     ) {
+                      console.log('variant type',type)
                       if (type === 'deletion') {
                         isoform.append('rect')
                           .attr('class', 'variant-deletion')
@@ -287,11 +298,27 @@ export default class IsoformVariantTrack {
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
-                          // .attr('height', variant_height)
-                          // .attr('width', x(fmax) - x(fmin))
+                          .datum({fmin: fmin, fmax: fmax});
+                      } else if (type === 'insertion') {
+                        isoform.append('polygon')
+                          .attr('class', 'variant-insertion')
+                          .attr('points', snv_points(x(fmin)))
+                          .attr('x', x(fmin))
+                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('z-index', 30)
                           .datum({fmin: fmin, fmax: fmax});
                       }
-                    }
+                      let symbol_string = (symbol.length>20 ? symbol.substr(0,20) : symbol).replace(/"/g,"");
+                      const symbol_string_length = symbol_string.length
+                      let text_label = isoform.append('text')
+                        .attr('class', 'variantLabel')
+                        .attr('fill', selected ? 'sandybrown' : 'gray')
+                        .attr('opacity', selected ? 1 : 0.5)
+                        .attr('height', isoform_title_height)
+                        .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
+                        .text(symbol_string)
+                        .datum({fmin: featureChild.fmin});
+                  }
                   });
                 }
               });
