@@ -351,8 +351,8 @@ export default class IsoformVariantTrack {
                               .style("height", 'auto')
                               .style("opacity", .9);
                             tooltipDiv.html(descriptionHtml)
-                              .style("left", (d3.event.pageX) + "px")
-                              .style("top", (d3.event.pageY - 28) + "px");
+                              .style("left", (d3.event.pageX+10) + "px")
+                              .style("top", (d3.event.pageY +10) + "px");
                           })
                           .on("mouseout", function(d) {
                             tooltipDiv.transition()
