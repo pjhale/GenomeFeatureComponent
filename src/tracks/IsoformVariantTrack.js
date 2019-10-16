@@ -282,7 +282,8 @@ export default class IsoformVariantTrack {
                       || (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                     ) {
                       console.log('variant type',type)
-                      if (type === 'deletion') {
+                      let drawnVariant = true;
+                      if (type.toLowerCase() === 'deletion') {
                         isoform.append('rect')
                           .attr('class', 'variant-deletion')
                           .attr('x', x(fmin))
@@ -291,7 +292,7 @@ export default class IsoformVariantTrack {
                           .attr('height', variant_height)
                           .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
-                      } else if (type === 'SNV') {
+                      } else if (type.toLowerCase() === 'snv' || type.toLowerCase() === 'point_mutation') {
                         isoform.append('polygon')
                           .attr('class', 'variant-SNV')
                           .attr('points', snv_points(x(fmin)))
@@ -299,7 +300,8 @@ export default class IsoformVariantTrack {
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
                           .datum({fmin: fmin, fmax: fmax});
-                      } else if (type === 'insertion') {
+                      }
+                      else if (type.toLowerCase() === 'insertion') {
                         isoform.append('polygon')
                           .attr('class', 'variant-insertion')
                           .attr('points', snv_points(x(fmin)))
@@ -308,16 +310,34 @@ export default class IsoformVariantTrack {
                           .attr('z-index', 30)
                           .datum({fmin: fmin, fmax: fmax});
                       }
-                      let symbol_string = (symbol.length>20 ? symbol.substr(0,20) : symbol).replace(/"/g,"");
-                      const symbol_string_length = symbol_string.length
-                      let text_label = isoform.append('text')
-                        .attr('class', 'variantLabel')
-                        .attr('fill', selected ? 'sandybrown' : 'gray')
-                        .attr('opacity', selected ? 1 : 0.5)
-                        .attr('height', isoform_title_height)
-                        .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
-                        .text(symbol_string)
-                        .datum({fmin: featureChild.fmin});
+                      else if (type.toLowerCase() === 'delins'
+                        || type.toLowerCase() === 'substitution'
+                        || type.toLowerCase() === 'indel'
+                      ) {
+                        isoform.append('polygon')
+                          .attr('class', 'variant-delins')
+                          .attr('points', snv_points(x(fmin)))
+                          .attr('x', x(fmin))
+                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('z-index', 30)
+                          .datum({fmin: fmin, fmax: fmax});
+                      }
+                      else{
+                        console.warn("type not found",type,variant)
+                        drawnVariant = false ;
+                      }
+                      if(drawnVariant){
+                        let symbol_string = (symbol.length>20 ? symbol.substr(0,20) : symbol).replace(/"/g,"");
+                        const symbol_string_length = symbol_string.length
+                        isoform.append('text')
+                          .attr('class', 'variantLabel')
+                          .attr('fill', selected ? 'sandybrown' : 'gray')
+                          .attr('opacity', selected ? 1 : 0.5)
+                          .attr('height', isoform_title_height)
+                          .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
+                          .text(symbol_string)
+                          .datum({fmin: featureChild.fmin});
+                      }
                   }
                   });
                 }

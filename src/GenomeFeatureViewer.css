@@ -27,6 +27,12 @@ html, body {
   stroke: turquoise;
 }
 
+.variant-delins{
+  fill-opacity: 1.0;
+  fill: orange;
+  stroke: orange;
+}
+
 
 .variant-SNV {
   fill-opacity: 1.0;
