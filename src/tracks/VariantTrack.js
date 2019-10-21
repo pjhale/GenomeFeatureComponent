@@ -76,9 +76,7 @@ export default class VariantTrack {
     }
 
     /* Method to get reference label */
-    async getTrackData()
-    {
-        let apolloService = new ApolloService()
-        this.variants =  await apolloService.GetFakeVariants();
+    async getTrackData() {
+        this.variants =  await new ApolloService().GetFakeVariants();
     }
 }

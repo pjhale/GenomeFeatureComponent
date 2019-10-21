@@ -1,11 +1,11 @@
 import GenomeFeatureViewer from 'GenomeFeatureViewer';
 // import {ApolloService} from "../services/ApolloService";
-import {FakeDataService} from "./FakeDataService";
+import {FakeAgrDataService} from "./FakeAgrDataService";
 //DELETE?UNUSED? import { ApolloService } from '../../src/services/services';
 
 // Global View Example
 // let apolloService = new ApolloService();
-let fakeDataService = new FakeDataService();
+let fakeAgrDataService = new FakeAgrDataService();
 
 let configGlobal1 = {
     "locale": "global",
@@ -132,13 +132,13 @@ let configGlobal4 = {
       "id": 12,
       "genome":"Mus musculus",
       "type": "isoform_variant",
-      "isoformFunction": fakeDataService.GetFakeWormGeneDataEgl8(),
+      "isoformFunction": fakeAgrDataService.GetFakeWormGeneDataEgl8(),
       "isoform_url": [
         "https://agr-apollo.berkeleybop.io/apollo/track/",
         "/All%20Genes/",
         ".json"
       ],
-      "variantFunction": fakeDataService.GetFakeWormVariantDataEgl8(),
+      "variantFunction": fakeAgrDataService.GetFakeWormVariantDataEgl8(),
       "variant_url": [
         "https://agr-apollo.berkeleybop.io/apollo/vcf/",
         "/Phenotypic%20Variants/",
@@ -161,13 +161,13 @@ let configGlobal5 = {
       "id": 12,
       "genome":"Mus musculus",
       "type": "isoform_variant",
-      "isoformFunction": fakeDataService.GetFakeFishGeneDataLbx2(),
+      "isoformFunction": fakeAgrDataService.GetFakeFishGeneDataLbx2(),
       "isoform_url": [
         "https://agr-apollo.berkeleybop.io/apollo/track/",
         "/All%20Genes/",
         ".json"
       ],
-      "variantFunction": fakeDataService.GetFakeFishVariantDataLbx2(),
+      "variantFunction": fakeAgrDataService.GetFakeFishVariantDataLbx2(),
       "variant_url": [
         "https://agr-apollo.berkeleybop.io/apollo/vcf/",
         "/Phenotypic%20Variants/",
@@ -190,13 +190,13 @@ let configGlobal6 = {
       "id": 12,
       "genome":"Mus musculus",
       "type": "isoform_variant",
-      "isoformFunction": fakeDataService.GetFakeFishGeneDataMyl7(),
+      "isoformFunction": fakeAgrDataService.GetFakeFishGeneDataMyl7(),
       "isoform_url": [
         "https://agr-apollo.berkeleybop.io/apollo/track/",
         "/All%20Genes/",
         ".json"
       ],
-      "variantFunction": fakeDataService.GetFakeFishVariantDataMyl7(),
+      "variantFunction": fakeAgrDataService.GetFakeFishVariantDataMyl7(),
       "variant_url": [
         "https://agr-apollo.berkeleybop.io/apollo/vcf/",
         "/Phenotypic%20Variants/",
