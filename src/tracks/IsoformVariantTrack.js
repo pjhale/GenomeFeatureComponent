@@ -286,6 +286,8 @@ export default class IsoformVariantTrack {
                       const description = getVariantDescription(variant);
                       const consequence = description.consequence ? description.consequence : "UNKNOWN";
                       const consequenceColor = getColorForConsequence(consequence);
+                      // let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
+                      let descriptionHtml = renderVariantDescription(description);
                       if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
                           .attr('class', 'variant-deletion')
@@ -295,56 +297,6 @@ export default class IsoformVariantTrack {
                           .attr('fill', consequenceColor)
                           .attr('height', variant_height)
                           .attr('width', x(fmax) - x(fmin))
-                          .datum({fmin: fmin, fmax: fmax});
-                      } else if (type.toLowerCase() === 'snv' || type.toLowerCase() === 'point_mutation') {
-                        isoform.append('polygon')
-                          .attr('class', 'variant-SNV')
-                          .attr('points', snv_points(x(fmin)))
-                          .attr('fill', consequenceColor)
-                          .attr('x', x(fmin))
-                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
-                          .attr('z-index', 30)
-                          .datum({fmin: fmin, fmax: fmax});
-                      }
-                      else if (type.toLowerCase() === 'insertion') {
-                        isoform.append('polygon')
-                          .attr('class', 'variant-insertion')
-                          .attr('points', insertion_points(x(fmin)))
-                          .attr('fill', consequenceColor)
-                          .attr('x', x(fmin))
-                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
-                          .attr('z-index', 30)
-                          .datum({fmin: fmin, fmax: fmax});
-                      }
-                      else if (type.toLowerCase() === 'delins'
-                        || type.toLowerCase() === 'substitution'
-                        || type.toLowerCase() === 'indel'
-                      ) {
-                        isoform.append('polygon')
-                          .attr('class', 'variant-delins')
-                          .attr('points', delins_points(x(fmin)))
-                          .attr('x', x(fmin))
-                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
-                          .attr('fill', consequenceColor)
-                          .attr('z-index', 30)
-                          .datum({fmin: fmin, fmax: fmax});
-                      }
-                      else{
-                        console.warn("type not found",type,variant);
-                        drawnVariant = false ;
-                      }
-                      if(drawnVariant && showVariantLabel){
-                        let symbol_string = getVariantSymbol(variant);
-                        const symbol_string_length = symbol_string.length;
-                        let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
-                        let descriptionHtml = renderVariantDescription(description);
-                        isoform.append('text')
-                          .attr('class', 'variantLabel')
-                          .attr('fill', selected ? 'sandybrown' : consequenceColor)
-                          .attr('opacity', selected ? 1 : 0.5)
-                          .attr('height', isoform_title_height)
-                          .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
-                          .text(symbol_string)
                           .on("mouseover", d => {
                             tooltipDiv.transition()
                               .duration(200)
@@ -360,6 +312,99 @@ export default class IsoformVariantTrack {
                               .duration(500)
                               .style("opacity", 0);
                           })
+                          .datum({fmin: fmin, fmax: fmax});
+                      } else if (type.toLowerCase() === 'snv' || type.toLowerCase() === 'point_mutation') {
+                        isoform.append('polygon')
+                          .attr('class', 'variant-SNV')
+                          .attr('points', snv_points(x(fmin)))
+                          .attr('fill', consequenceColor)
+                          .attr('x', x(fmin))
+                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('z-index', 30)
+                          .on("mouseover", d => {
+                            tooltipDiv.transition()
+                              .duration(200)
+                              .style("width", 'auto')
+                              .style("height", 'auto')
+                              .style("opacity", .9);
+                            tooltipDiv.html(descriptionHtml)
+                              .style("left", (d3.event.pageX+10) + "px")
+                              .style("top", (d3.event.pageY +10) + "px");
+                          })
+                          .on("mouseout", function(d) {
+                            tooltipDiv.transition()
+                              .duration(500)
+                              .style("opacity", 0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax});
+                      }
+                      else if (type.toLowerCase() === 'insertion') {
+                        isoform.append('polygon')
+                          .attr('class', 'variant-insertion')
+                          .attr('points', insertion_points(x(fmin)))
+                          .attr('fill', consequenceColor)
+                          .attr('x', x(fmin))
+                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('z-index', 30)
+                          .on("mouseover", d => {
+                            tooltipDiv.transition()
+                              .duration(200)
+                              .style("width", 'auto')
+                              .style("height", 'auto')
+                              .style("opacity", .9);
+                            tooltipDiv.html(descriptionHtml)
+                              .style("left", (d3.event.pageX+10) + "px")
+                              .style("top", (d3.event.pageY +10) + "px");
+                          })
+                          .on("mouseout", function(d) {
+                            tooltipDiv.transition()
+                              .duration(500)
+                              .style("opacity", 0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax});
+                      }
+                      else if (type.toLowerCase() === 'delins'
+                        || type.toLowerCase() === 'substitution'
+                        || type.toLowerCase() === 'indel'
+                      ) {
+                        isoform.append('polygon')
+                          .attr('class', 'variant-delins')
+                          .attr('points', delins_points(x(fmin)))
+                          .attr('x', x(fmin))
+                          .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('fill', consequenceColor)
+                          .attr('z-index', 30)
+                          .on("mouseover", d => {
+                            tooltipDiv.transition()
+                              .duration(200)
+                              .style("width", 'auto')
+                              .style("height", 'auto')
+                              .style("opacity", .9);
+                            tooltipDiv.html(descriptionHtml)
+                              .style("left", (d3.event.pageX+10) + "px")
+                              .style("top", (d3.event.pageY +10) + "px");
+                          })
+                          .on("mouseout", function(d) {
+                            tooltipDiv.transition()
+                              .duration(500)
+                              .style("opacity", 0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax});
+                      }
+                      else{
+                        console.warn("type not found",type,variant);
+                        drawnVariant = false ;
+                      }
+                      if(drawnVariant && showVariantLabel){
+                        let symbol_string = getVariantSymbol(variant);
+                        const symbol_string_length = symbol_string.length;
+                        isoform.append('text')
+                          .attr('class', 'variantLabel')
+                          .attr('fill', selected ? 'sandybrown' : consequenceColor)
+                          .attr('opacity', selected ? 1 : 0.5)
+                          .attr('height', isoform_title_height)
+                          .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
+                          .text(symbol_string)
                           .datum({fmin: featureChild.fmin});
                       }
                   }
