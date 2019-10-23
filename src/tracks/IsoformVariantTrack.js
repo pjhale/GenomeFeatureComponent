@@ -1,7 +1,6 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
 import {
-  getDescriptionDimensions,
   getVariantDescription,
   getVariantSymbol,
   renderVariantDescription
@@ -103,6 +102,17 @@ export default class IsoformVariantTrack {
 
     let heightBuffer = 0 ;
 
+    let tooltipDiv = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .attr("id", "tooltip")
+      .style("opacity", 0);
+
+    const closeToolTip = () => {
+        tooltipDiv.transition()
+          .duration(100)
+          .style("opacity", 0);
+    };
+
     let row_count = 0;
     let used_space = [];
     let fmin_display = -1;
@@ -126,9 +136,6 @@ export default class IsoformVariantTrack {
           return a - b;
         });
 
-        let tooltipDiv = d3.select("body").append("div")
-          .attr("class", "tooltip")
-          .style("opacity", 0);
 
         // For each isoform..
         let warningRendered = false ;
@@ -159,7 +166,6 @@ export default class IsoformVariantTrack {
                 text_label = isoform.append('text')
                   .attr('class', 'geneLabel')
                   .attr('fill', selected ? 'sandybrown' : 'black')
-                  // .attr('opacity', selected ? 1 : 0.5)
                   .attr('height', isoform_title_height)
                   .attr("transform", "translate(" + x(featureChild.fmin) + `,-${geneLabelHeight})`)
                   .text(text_string)
@@ -311,7 +317,6 @@ export default class IsoformVariantTrack {
                       const description = getVariantDescription(variant);
                       const consequence = description.consequence ? description.consequence : "UNKNOWN";
                       const consequenceColor = getColorForConsequence(consequence);
-                      // let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
                       let descriptionHtml = renderVariantDescription(description);
                       if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
@@ -322,7 +327,7 @@ export default class IsoformVariantTrack {
                           .attr('fill', consequenceColor)
                           .attr('height', variant_height)
                           .attr('width', x(fmax) - x(fmin))
-                          .on("mouseover", d => {
+                          .on("click", d => {
                             tooltipDiv.transition()
                               .duration(200)
                               .style("width", 'auto')
@@ -330,12 +335,13 @@ export default class IsoformVariantTrack {
                               .style("opacity", .9);
                             tooltipDiv.html(descriptionHtml)
                               .style("left", (d3.event.pageX+10) + "px")
-                              .style("top", (d3.event.pageY +10) + "px");
-                          })
-                          .on("mouseout", function(d) {
-                            tooltipDiv.transition()
-                              .duration(500)
-                              .style("opacity", 0);
+                              .style("top", (d3.event.pageY +10) + "px")
+                              .append('button')
+                              .attr("type","button")
+                              .text('Close')
+                              .on('click', d => closeToolTip())
+                            ;
+
                           })
                           .datum({fmin: fmin, fmax: fmax});
                       } else if (type.toLowerCase() === 'snv' || type.toLowerCase() === 'point_mutation') {
@@ -354,12 +360,11 @@ export default class IsoformVariantTrack {
                               .style("opacity", .9);
                             tooltipDiv.html(descriptionHtml)
                               .style("left", (d3.event.pageX+10) + "px")
-                              .style("top", (d3.event.pageY +10) + "px");
-                          })
-                          .on("mouseout", function(d) {
-                            tooltipDiv.transition()
-                              .duration(500)
-                              .style("opacity", 0);
+                              .style("top", (d3.event.pageY +10) + "px")
+                              .append('button')
+                              .attr("type","button")
+                              .text('Close')
+                              .on('click', d => closeToolTip())
                           })
                           .datum({fmin: fmin, fmax: fmax});
                       }
@@ -371,7 +376,7 @@ export default class IsoformVariantTrack {
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
-                          .on("mouseover", d => {
+                          .on("click", d => {
                             tooltipDiv.transition()
                               .duration(200)
                               .style("width", 'auto')
@@ -379,12 +384,11 @@ export default class IsoformVariantTrack {
                               .style("opacity", .9);
                             tooltipDiv.html(descriptionHtml)
                               .style("left", (d3.event.pageX+10) + "px")
-                              .style("top", (d3.event.pageY +10) + "px");
-                          })
-                          .on("mouseout", function(d) {
-                            tooltipDiv.transition()
-                              .duration(500)
-                              .style("opacity", 0);
+                              .style("top", (d3.event.pageY +10) + "px")
+                              .append('button')
+                              .attr("type","button")
+                              .text('Close')
+                              .on('click', d => closeToolTip())
                           })
                           .datum({fmin: fmin, fmax: fmax});
                       }
@@ -399,7 +403,7 @@ export default class IsoformVariantTrack {
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('fill', consequenceColor)
                           .attr('z-index', 30)
-                          .on("mouseover", d => {
+                          .on("click", d => {
                             tooltipDiv.transition()
                               .duration(200)
                               .style("width", 'auto')
@@ -407,12 +411,11 @@ export default class IsoformVariantTrack {
                               .style("opacity", .9);
                             tooltipDiv.html(descriptionHtml)
                               .style("left", (d3.event.pageX+10) + "px")
-                              .style("top", (d3.event.pageY +10) + "px");
-                          })
-                          .on("mouseout", function(d) {
-                            tooltipDiv.transition()
-                              .duration(500)
-                              .style("opacity", 0);
+                              .style("top", (d3.event.pageY +10) + "px")
+                              .append('button')
+                              .attr("type","button")
+                              .text('Close')
+                              .on('click', d => closeToolTip())
                           })
                           .datum({fmin: fmin, fmax: fmax});
                       }
