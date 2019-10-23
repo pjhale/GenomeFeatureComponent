@@ -20,7 +20,6 @@ export default class IsoformVariantTrack {
     this.transcriptTypes = transcriptTypes;
     this.variantTypes = variantTypes;
     this.showVariantLabel = showVariantLabel!==undefined ? showVariantLabel : true ;
-    console.log('showing variant label',showVariantLabel)
   }
 
   // Draw our track on the viewer
@@ -47,6 +46,7 @@ export default class IsoformVariantTrack {
     let exon_height = 10; // will be white / transparent
     let cds_height = 10; // will be colored in
     let isoform_height = 40; // height for each isoform
+    const geneLabelHeight = 20 ;
     let isoform_title_height = 0; // height for each isoform
     let utr_height = 10; // this is the height of the isoform running all of the way through
     let variant_height = 10; // this is the height of the isoform running all of the way through
@@ -93,12 +93,15 @@ export default class IsoformVariantTrack {
       sortWeight[exon_feats[i]] = 100;
     }
 
+    let geneList = {};
 
     isoformData = isoformData.sort(function (a, b) {
       if (a.selected && !b.selected) return -1;
       if (!a.selected && b.selected) return 1;
       return a.name - b.name;
     });
+
+    let heightBuffer = 0 ;
 
     let row_count = 0;
     let used_space = [];
@@ -139,8 +142,29 @@ export default class IsoformVariantTrack {
             let current_row = checkSpace(used_space, x(featureChild.fmin), x(featureChild.fmax));
             if (row_count < MAX_ROWS) {
               // An isoform container
+
+              let text_string, text_label;
+              let addingGeneLabel = false ;
+              if(Object.keys(geneList).indexOf(feature.name)<0) {
+                heightBuffer += geneLabelHeight ;
+                addingGeneLabel = true ;
+                geneList[feature.name] = 'Green';
+              }
+
               let isoform = track.append("g").attr("class", "isoform")
-                .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")");
+                .attr("transform", "translate(0," + ((row_count * isoform_height) + 10 + heightBuffer) + ")");
+
+              if(addingGeneLabel){
+                text_string = feature.name;
+                text_label = isoform.append('text')
+                  .attr('class', 'geneLabel')
+                  .attr('fill', selected ? 'sandybrown' : 'black')
+                  // .attr('opacity', selected ? 1 : 0.5)
+                  .attr('height', isoform_title_height)
+                  .attr("transform", "translate(" + x(featureChild.fmin) + `,-${geneLabelHeight})`)
+                  .text(text_string)
+                  .datum({fmin: featureChild.fmin});
+              }
 
               isoform.append("polygon")
                 .datum(function () {
@@ -163,8 +187,9 @@ export default class IsoformVariantTrack {
                 .attr("transform", "translate(" + x(featureChild.fmin) + ",0)")
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
                 .datum({fmin: featureChild.fmin, fmax: featureChild.fmax});
-              let text_string = featureChild.name + " (" + feature.name + ")";
-              let text_label = isoform.append('text')
+
+              text_string = featureChild.name ;
+              text_label = isoform.append('text')
                 .attr('class', 'transcriptLabel')
                 .attr('fill', selected ? 'sandybrown' : 'gray')
                 .attr('opacity', selected ? 1 : 0.5)
@@ -321,7 +346,7 @@ export default class IsoformVariantTrack {
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
-                          .on("mouseover", d => {
+                          .on("click", d => {
                             tooltipDiv.transition()
                               .duration(200)
                               .style("width", 'auto')
@@ -426,7 +451,7 @@ export default class IsoformVariantTrack {
                 .append('text')
                 .attr('x', 10)
                 .attr('y', 10)
-                .attr("transform", "translate(0," + ((row_count * isoform_height) + 20) + ")")
+                .attr("transform", "translate(0," + ((row_count * isoform_height) + 20 +heightBuffer) + ")")
                 .attr('fill', 'red')
                 .attr('opacity', 1)
                 .attr('height', isoform_title_height)
@@ -447,7 +472,7 @@ export default class IsoformVariantTrack {
         .text('Overview of non-coding genome features unavailable at this time.');
     }
     // we return the appropriate height function
-    return row_count * isoform_height;
+    return (row_count * isoform_height) + heightBuffer;
   }
 
   async populateTrack(track,geneCallbackFunction,variantCallbackFunction) {

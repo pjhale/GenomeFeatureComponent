@@ -94,7 +94,6 @@ export default class Drawer {
             track["chromosome"] = chromosome;
           if(track.type === "isoform_variant")
           {
-            console.log('showing lable',showVariantLabel)
             const isoformVariantTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes,variantTypes,showVariantLabel);
             await isoformVariantTrack.populateTrack(track,() => track.isoformFunction,() => track.variantFunction);
             track_height += isoformVariantTrack.DrawTrack();
