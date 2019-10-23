@@ -53,19 +53,20 @@ export default class IsoformVariantTrack {
     let arrow_width = 10;
     let arrow_points = '0,0 0,' + arrow_height + ' ' + arrow_width + ',' + arrow_width;
     let snv_height = 10;
-    let snv_width = 5;
+    let snv_width = 10;
 
     const insertion_points = (x) => {
       return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
     };
 
     const delins_points = (x) => {
-      return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+      // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+      const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x+(snv_width/2.0)},${snv_height} ${x-(snv_width/2.0)},${0} ${x+(snv_width/2.0)},${0}`;
+      console.log(delins_strings);
+      return delins_strings;
     };
 
     const snv_points = (x) => {
-      // return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
-      console.log(`${x},${snv_height} ${x+(snv_width/2.0)},${snv_height/2.0} ${x},${snv_height} ${x-(snv_width/2.0)},${snv_height/2.0}`);
       return `${x},${snv_height} ${x+(snv_width/2.0)},${snv_height/2.0} ${x},${0} ${x-(snv_width/2.0)},${snv_height/2.0}`;
     };
 
@@ -76,20 +77,6 @@ export default class IsoformVariantTrack {
     // Calculate where this track should go and translate it
     let newTrackPosition = calculateNewTrackPosition(this.viewer);
     let track = viewer.append("g").attr('transform', 'translate(0,' + newTrackPosition + ')').attr("class", "track");
-
-    // console.log('viewer',viewer);
-    // let filterTable = viewer.append("table").attr('width',"80").attr('id','filterTable');
-    // let cell = filterTable.append('tr').append('td');
-    // cell.value = "dog";
-    // cell.innerHTML = "cat";
-
-    // let filterTable = document.getElementById('filterTable');
-    // console.log('table',filterTable);
-    // for(let variantTypeIndex in this.variantTypes){
-    //   // console.log(variantType)
-    //   let row = filterTable.insertRow(0);
-    // }
-
 
 
     //need to build a new sortWeight since these can be dynamic
