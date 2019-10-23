@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
 import {
+  getColorForConsequence,
   getDescriptionDimensions,
   getVariantDescription,
   getVariantSymbol,
@@ -53,6 +54,15 @@ export default class IsoformVariantTrack {
     let arrow_points = '0,0 0,' + arrow_height + ' ' + arrow_width + ',' + arrow_width;
     let snv_height = 10;
     let snv_width = 5;
+
+    const insertion_points = (x) => {
+      return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+    };
+
+    const delins_points = (x) => {
+      return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+    };
+
     const snv_points = (x) => {
       return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
     };
@@ -279,6 +289,7 @@ export default class IsoformVariantTrack {
                     // console.log('variant',variant);
 
 
+
                     if (
                       (fmin < innerChild.fmin && fmax > innerChild.fmin)
                       || (fmax > innerChild.fmax && fmin < innerChild.fmax)
@@ -286,12 +297,17 @@ export default class IsoformVariantTrack {
                     ) {
                       // console.log('variant type',type)
                       let drawnVariant = true;
-                      if (type.toLowerCase() === 'deletion') {
+                      const description = getVariantDescription(variant);
+                      const consequence = description.consequence ? description.consequence : "UNKNOWN";
+                      console.log('consquence',consequence)
+                      const consequenceColor = getColorForConsequence(consequence);
+                      if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
                           .attr('class', 'variant-deletion')
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
+                          .attr('fill', consequenceColor)
                           .attr('height', variant_height)
                           .attr('width', x(fmax) - x(fmin))
                           .datum({fmin: fmin, fmax: fmax});
@@ -299,6 +315,7 @@ export default class IsoformVariantTrack {
                         isoform.append('polygon')
                           .attr('class', 'variant-SNV')
                           .attr('points', snv_points(x(fmin)))
+                          .attr('fill', consequenceColor)
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
@@ -307,7 +324,8 @@ export default class IsoformVariantTrack {
                       else if (type.toLowerCase() === 'insertion') {
                         isoform.append('polygon')
                           .attr('class', 'variant-insertion')
-                          .attr('points', snv_points(x(fmin)))
+                          .attr('points', insertion_points(x(fmin)))
+                          .attr('fill', consequenceColor)
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
                           .attr('z-index', 30)
@@ -319,20 +337,20 @@ export default class IsoformVariantTrack {
                       ) {
                         isoform.append('polygon')
                           .attr('class', 'variant-delins')
-                          .attr('points', snv_points(x(fmin)))
+                          .attr('points', delins_points(x(fmin)))
                           .attr('x', x(fmin))
                           .attr('transform', 'translate(0,' + (variant_offset - transcript_backbone_height) + ')')
+                          .attr('fill', consequenceColor)
                           .attr('z-index', 30)
                           .datum({fmin: fmin, fmax: fmax});
                       }
                       else{
-                        console.warn("type not found",type,variant)
+                        console.warn("type not found",type,variant);
                         drawnVariant = false ;
                       }
                       if(drawnVariant){
                         let symbol_string = getVariantSymbol(variant);
                         const symbol_string_length = symbol_string.length;
-                        let description = getVariantDescription(variant);
                         // console.log('h/w',descriptionHeight,descriptionWidth)
                         let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
                         let descriptionHtml = renderVariantDescription(description);

@@ -21,18 +21,6 @@ html, body {
   stroke: black;
 }
 
-.variant-insertion{
-  fill-opacity: 1.0;
-  fill: turquoise;
-  stroke: turquoise;
-}
-
-.variant-delins{
-  fill-opacity: 1.0;
-  fill: orange;
-  stroke: orange;
-}
-
 .tooltip-table{
   text-align: left;
 }
@@ -45,21 +33,26 @@ div.tooltip {
   padding: 2px;
   font: 12px sans-serif;
   background: lightsteelblue;
-  border: 0px;
+  border: 0;
   border-radius: 8px;
   pointer-events: none;
 }
 
+
+.variant-insertion{
+  fill-opacity: 1.0;
+}
+
+.variant-delins{
+  fill-opacity: 1.0;
+}
+
 .variant-SNV {
   fill-opacity: 1.0;
-  fill: red;
-  stroke: red;
 }
 
 .variant-deletion{
   fill-opacity: 1.0;
-  fill: purple;
-  stroke: purple;
 }
 
 .transcriptBackbone {
