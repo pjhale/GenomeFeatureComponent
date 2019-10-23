@@ -38,6 +38,10 @@ div.tooltip {
   pointer-events: none;
 }
 
+.variant-label {
+  stroke-width: 1px;
+  color: black;
+}
 
 .variant-insertion{
   fill-opacity: 1.0;
@@ -120,12 +124,6 @@ div.tooltip {
   color: black;
 }
 
-.variantLabel {
-  stroke-width: 1px;
-  color: black;
-  background-color: green;
-  fill: pink;
-}
 
 .axis {
   font: 14px sans-serif;

@@ -357,7 +357,7 @@ export default class IsoformVariantTrack {
                         // console.log(descriptionHeight,descriptionWidth);
                         isoform.append('text')
                           .attr('class', 'variantLabel')
-                          .attr('fill', selected ? 'sandybrown' : 'gray')
+                          .attr('fill', selected ? 'sandybrown' : consequenceColor)
                           .attr('opacity', selected ? 1 : 0.5)
                           .attr('height', isoform_title_height)
                           .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
