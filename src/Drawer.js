@@ -32,9 +32,10 @@ export default class Drawer {
         let width  = this.gfc["width"];
         let viewer = this.gfc["viewer"];
         let tracks = this.gfc["tracks"];
+        let showVariantLabel = this.gfc.config["showVariantLabel"] ;
         let transcriptTypes = this.gfc.config.transcriptTypes ? this.gfc.config.transcriptTypes : ['mRNA'];
-      let variantTypes = this.gfc.config.variantTypes ? this.gfc.config.variantTypes : ['point_mutation','MNV','Deletion','Insertion','Delins'];
-      let svg_target = this.gfc["svg_target"];
+        let variantTypes = this.gfc.config.variantTypes ? this.gfc.config.variantTypes : ['point_mutation','MNV','Deletion','Insertion','Delins'];
+        let svg_target = this.gfc["svg_target"];
         let draggingViewer = null;
         let draggingStart = null;
 
@@ -93,7 +94,8 @@ export default class Drawer {
             track["chromosome"] = chromosome;
           if(track.type === "isoform_variant")
           {
-            const isoformVariantTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes,variantTypes);
+            console.log('showing lable',showVariantLabel)
+            const isoformVariantTrack = new IsoformVariantTrack(viewer, track, height, width,transcriptTypes,variantTypes,showVariantLabel);
             await isoformVariantTrack.populateTrack(track,() => track.isoformFunction,() => track.variantFunction);
             track_height += isoformVariantTrack.DrawTrack();
           }

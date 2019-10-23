@@ -11,7 +11,7 @@ import {getColorForConsequence} from "../services/ConsequenceService";
 
 export default class IsoformVariantTrack {
 
-  constructor(viewer, track, height, width, transcriptTypes, variantTypes) {
+  constructor(viewer, track, height, width, transcriptTypes, variantTypes,showVariantLabel) {
     this.trackData = {};
     this.variantData = {};
     this.viewer = viewer;
@@ -19,6 +19,8 @@ export default class IsoformVariantTrack {
     this.height = height;
     this.transcriptTypes = transcriptTypes;
     this.variantTypes = variantTypes;
+    this.showVariantLabel = showVariantLabel!==undefined ? showVariantLabel : true ;
+    console.log('showing variant label',showVariantLabel)
   }
 
   // Draw our track on the viewer
@@ -29,6 +31,7 @@ export default class IsoformVariantTrack {
     let variantData = this.variantData;
     let viewer = this.viewer;
     let width = this.width;
+    let showVariantLabel = this.showVariantLabel;
 
     // TODO: make configurable and a const / default
     let MAX_ROWS = 10;
@@ -62,7 +65,6 @@ export default class IsoformVariantTrack {
     const delins_points = (x) => {
       // const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
       const delins_strings = `${x-(snv_width/2.0)},${snv_height} ${x+(snv_width/2.0)},${snv_height} ${x-(snv_width/2.0)},${0} ${x+(snv_width/2.0)},${0}`;
-      console.log(delins_strings);
       return delins_strings;
     };
 
@@ -275,20 +277,14 @@ export default class IsoformVariantTrack {
                 if (validInnerType) {
                   variantData.forEach(variant => {
                     let {type, fmax, fmin} = variant;
-                    // console.log('variant',variant);
-
-
-
                     if (
                       (fmin < innerChild.fmin && fmax > innerChild.fmin)
                       || (fmax > innerChild.fmax && fmin < innerChild.fmax)
                       || (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                     ) {
-                      // console.log('variant type',type)
                       let drawnVariant = true;
                       const description = getVariantDescription(variant);
                       const consequence = description.consequence ? description.consequence : "UNKNOWN";
-                      console.log('consquence',consequence);
                       const consequenceColor = getColorForConsequence(consequence);
                       if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
@@ -337,13 +333,11 @@ export default class IsoformVariantTrack {
                         console.warn("type not found",type,variant);
                         drawnVariant = false ;
                       }
-                      if(drawnVariant){
+                      if(drawnVariant && showVariantLabel){
                         let symbol_string = getVariantSymbol(variant);
                         const symbol_string_length = symbol_string.length;
-                        // console.log('h/w',descriptionHeight,descriptionWidth)
                         let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
                         let descriptionHtml = renderVariantDescription(description);
-                        // console.log(descriptionHeight,descriptionWidth);
                         isoform.append('text')
                           .attr('class', 'variantLabel')
                           .attr('fill', selected ? 'sandybrown' : consequenceColor)
@@ -386,6 +380,7 @@ export default class IsoformVariantTrack {
                 .attr('xlink:show', 'new')
                 .append('text')
                 .attr('x', 10)
+                .attr('y', 10)
                 .attr("transform", "translate(0," + ((row_count * isoform_height) + 20) + ")")
                 .attr('fill', 'red')
                 .attr('opacity', 1)

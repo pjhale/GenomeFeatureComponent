@@ -38,7 +38,7 @@ let configGlobal2 = {
     "chromosome": "2L",
     "start": 19400752,
     "end": 19426596,
-    "transcriptTypes":  [
+  "transcriptTypes":  [
         'mRNA', 'ncRNA', 'piRNA'
         , 'lincRNA'
         , 'miRNA'
@@ -82,7 +82,7 @@ let configLocal3 = {
      "start": 48515461,
      "end": 48515461,
      "centerVariant": true,
-     "tracks": [
+  "tracks": [
          {
              "id": 1,
              "label": "Case Variants",
@@ -107,6 +107,7 @@ let configGlobal4 = {
   "chromosome": 'V',
   "start": 20824,
   "end": 43697,
+  "showVariantLabel":false,
   "transcriptTypes":  [
     'mRNA', 'ncRNA', 'piRNA'
     , 'lincRNA'
@@ -156,6 +157,7 @@ let configGlobal5 = {
   "chromosome": 'V',
   "start": 20824,
   "end": 43697,
+  "showVariantLabel":true ,
   "tracks": [
     {
       "id": 12,
@@ -185,6 +187,7 @@ let configGlobal6 = {
   "chromosome": 'V',
   "start": 20824,
   "end": 43697,
+  "showVariantLabel":false,
   "tracks": [
     {
       "id": 12,
