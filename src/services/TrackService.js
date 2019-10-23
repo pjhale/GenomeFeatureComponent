@@ -1,5 +1,3 @@
-import {getDescriptionDimensions} from "./VariantService";
-
 function renderStrand(strand) {
   if(strand===1) return '+';
   if(strand===-1) return '-';
@@ -7,7 +5,6 @@ function renderStrand(strand) {
 }
 
 export function renderTrackDescription(feature){
-  let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(feature);
   let returnString = '';
   returnString += `<table class="tooltip-table"><tbody>`;
   if(feature.id.indexOf('http')<0){
