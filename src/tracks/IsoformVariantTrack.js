@@ -6,6 +6,7 @@ import {
   renderVariantDescription
 } from "../services/VariantService";
 import {getColorForConsequence} from "../services/ConsequenceService";
+import {renderTrackDescription} from "../services/TrackService";
 // import {description} from "d3/dist/package";
 
 export default class IsoformVariantTrack {
@@ -158,17 +159,35 @@ export default class IsoformVariantTrack {
                 geneList[feature.name] = 'Green';
               }
 
+              console.log(featureChild)
+
               let isoform = track.append("g").attr("class", "isoform")
-                .attr("transform", "translate(0," + ((row_count * isoform_height) + 10 + heightBuffer) + ")");
+                .attr("transform", "translate(0," + ((row_count * isoform_height) + 10 + heightBuffer) + ")")
+              ;
 
               if(addingGeneLabel){
                 text_string = feature.name;
+                console.log('feature',feature)
                 text_label = isoform.append('text')
                   .attr('class', 'geneLabel')
                   .attr('fill', selected ? 'sandybrown' : 'black')
                   .attr('height', isoform_title_height)
                   .attr("transform", "translate(" + x(featureChild.fmin) + `,-${geneLabelHeight})`)
                   .text(text_string)
+                  .on("click", d => {
+                    tooltipDiv.transition()
+                      .duration(200)
+                      .style("width", 'auto')
+                      .style("height", 'auto')
+                      .style("opacity", .9);
+                    tooltipDiv.html(renderTrackDescription(feature))
+                      .style("left", (d3.event.pageX+10) + "px")
+                      .style("top", (d3.event.pageY +10) + "px")
+                      .append('button')
+                      .attr("type","button")
+                      .text('Close')
+                      .on('click', d => closeToolTip())
+                  })
                   .datum({fmin: featureChild.fmin});
               }
 
@@ -184,7 +203,22 @@ export default class IsoformVariantTrack {
                   } else {
                     return 'translate(' + Number(x(d.fmin)) + ',' + arrow_height + ') rotate(180)';
                   }
-                });
+                })
+                .on("click", d => {
+                  tooltipDiv.transition()
+                    .duration(200)
+                    .style("width", 'auto')
+                    .style("height", 'auto')
+                    .style("opacity", .9);
+                  tooltipDiv.html(renderTrackDescription(featureChild))
+                    .style("left", (d3.event.pageX+10) + "px")
+                    .style("top", (d3.event.pageY +10) + "px")
+                    .append('button')
+                    .attr("type","button")
+                    .text('Close')
+                    .on('click', d => closeToolTip())
+                })
+              ;
 
               isoform.append('rect')
                 .attr('class', 'transcriptBackbone')
@@ -192,6 +226,20 @@ export default class IsoformVariantTrack {
                 .attr('height', transcript_backbone_height)
                 .attr("transform", "translate(" + x(featureChild.fmin) + ",0)")
                 .attr('width', x(featureChild.fmax) - x(featureChild.fmin))
+                .on("click", d => {
+                  tooltipDiv.transition()
+                    .duration(200)
+                    .style("width", 'auto')
+                    .style("height", 'auto')
+                    .style("opacity", .9);
+                  tooltipDiv.html(renderTrackDescription(featureChild))
+                    .style("left", (d3.event.pageX+10) + "px")
+                    .style("top", (d3.event.pageY +10) + "px")
+                    .append('button')
+                    .attr("type","button")
+                    .text('Close')
+                    .on('click', d => closeToolTip())
+                })
                 .datum({fmin: featureChild.fmin, fmax: featureChild.fmax});
 
               text_string = featureChild.name ;
@@ -202,6 +250,20 @@ export default class IsoformVariantTrack {
                 .attr('height', isoform_title_height)
                 .attr("transform", "translate(" + x(featureChild.fmin) + ",0)")
                 .text(text_string)
+                .on("click", d => {
+                  tooltipDiv.transition()
+                    .duration(200)
+                    .style("width", 'auto')
+                    .style("height", 'auto')
+                    .style("opacity", .9);
+                  tooltipDiv.html(renderTrackDescription(featureChild))
+                    .style("left", (d3.event.pageX+10) + "px")
+                    .style("top", (d3.event.pageY +10) + "px")
+                    .append('button')
+                    .attr("type","button")
+                    .text('Close')
+                    .on('click', d => closeToolTip())
+                })
                 .datum({fmin: featureChild.fmin});
 
               //Now that the label has been created we can calculate the space that
@@ -283,6 +345,20 @@ export default class IsoformVariantTrack {
                     .attr('height', exon_height)
                     .attr('z-index', 10)
                     .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
+                    .on("click", d => {
+                      tooltipDiv.transition()
+                        .duration(200)
+                        .style("width", 'auto')
+                        .style("height", 'auto')
+                        .style("opacity", .9);
+                      tooltipDiv.html(renderTrackDescription(featureChild))
+                        .style("left", (d3.event.pageX+10) + "px")
+                        .style("top", (d3.event.pageY +10) + "px")
+                        .append('button')
+                        .attr("type","button")
+                        .text('Close')
+                        .on('click', d => closeToolTip())
+                    })
                     .datum({fmin: innerChild.fmin, fmax: innerChild.fmax});
                 } else if (CDS_feats.indexOf(innerType) >= 0) {
                   validInnerType = true;
@@ -293,6 +369,20 @@ export default class IsoformVariantTrack {
                     .attr('z-index', 20)
                     .attr('height', cds_height)
                     .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
+                    .on("click", d => {
+                      tooltipDiv.transition()
+                        .duration(200)
+                        .style("width", 'auto')
+                        .style("height", 'auto')
+                        .style("opacity", .9);
+                      tooltipDiv.html(renderTrackDescription(featureChild))
+                        .style("left", (d3.event.pageX+10) + "px")
+                        .style("top", (d3.event.pageY +10) + "px")
+                        .append('button')
+                        .attr("type","button")
+                        .text('Close')
+                        .on('click', d => closeToolTip())
+                    })
                     .datum({fmin: innerChild.fmin, fmax: innerChild.fmax});
                 } else if (UTR_feats.indexOf(innerType) >= 0) {
                   validInnerType = true;
@@ -303,6 +393,20 @@ export default class IsoformVariantTrack {
                     .attr('z-index', 20)
                     .attr('height', utr_height)
                     .attr('width', x(innerChild.fmax) - x(innerChild.fmin))
+                    .on("click", d => {
+                      tooltipDiv.transition()
+                        .duration(200)
+                        .style("width", 'auto')
+                        .style("height", 'auto')
+                        .style("opacity", .9);
+                      tooltipDiv.html(renderTrackDescription(featureChild))
+                        .style("left", (d3.event.pageX+10) + "px")
+                        .style("top", (d3.event.pageY +10) + "px")
+                        .append('button')
+                        .attr("type","button")
+                        .text('Close')
+                        .on('click', d => closeToolTip())
+                    })
                     .datum({fmin: innerChild.fmin, fmax: innerChild.fmax});
                 }
                 if (validInnerType) {
