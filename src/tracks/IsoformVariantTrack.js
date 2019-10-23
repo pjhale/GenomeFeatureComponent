@@ -64,7 +64,9 @@ export default class IsoformVariantTrack {
     };
 
     const snv_points = (x) => {
-      return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+      // return `${x-(snv_width/2.0)},${snv_height} ${x},0 ${x+(snv_width/2.0)},${snv_height}`;
+      console.log(`${x},${snv_height} ${x+(snv_width/2.0)},${snv_height/2.0} ${x},${snv_height} ${x-(snv_width/2.0)},${snv_height/2.0}`);
+      return `${x},${snv_height} ${x+(snv_width/2.0)},${snv_height/2.0} ${x},${0} ${x-(snv_width/2.0)},${snv_height/2.0}`;
     };
 
     let x = d3.scaleLinear()
