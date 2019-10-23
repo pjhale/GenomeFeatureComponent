@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 import {calculateNewTrackPosition, checkSpace, findRange} from '../RenderFunctions';
 import {
-  getColorForConsequence,
   getDescriptionDimensions,
   getVariantDescription,
   getVariantSymbol,
   renderVariantDescription
 } from "../services/VariantService";
+import {getColorForConsequence} from "../services/ConsequenceService";
 // import {description} from "d3/dist/package";
 
 export default class IsoformVariantTrack {
@@ -288,7 +288,7 @@ export default class IsoformVariantTrack {
                       let drawnVariant = true;
                       const description = getVariantDescription(variant);
                       const consequence = description.consequence ? description.consequence : "UNKNOWN";
-                      console.log('consquence',consequence)
+                      console.log('consquence',consequence);
                       const consequenceColor = getColorForConsequence(consequence);
                       if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
@@ -386,7 +386,7 @@ export default class IsoformVariantTrack {
                 .attr('xlink:show', 'new')
                 .append('text')
                 .attr('x', 10)
-                .attr("transform", "translate(0," + ((row_count * isoform_height) + 10) + ")")
+                .attr("transform", "translate(0," + ((row_count * isoform_height) + 20) + ")")
                 .attr('fill', 'red')
                 .attr('opacity', 1)
                 .attr('height', isoform_title_height)

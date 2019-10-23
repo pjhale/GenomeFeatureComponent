@@ -8,24 +8,6 @@ export function getDescriptionDimensions(description){
   return {descriptionWidth,descriptionHeight};
 }
 
-export function getColorForConsequence(consequence) {
-
-  if(consequence.indexOf(",")>0){
-    return 'hotpink';
-  }
-
-  switch(consequence){
-    case 'UNKNOWN':
-      return 'gray';
-    case 'stop_gained':
-      return 'orange';
-    case 'frameshift_variant':
-      return 'green';
-    default:
-      return 'black';
-  }
-}
-
 export function renderVariantDescription(description){
   let {descriptionHeight, descriptionWidth} = getDescriptionDimensions(description);
   let returnString = '';
