@@ -131,13 +131,17 @@ div.tooltip {
   font-size: 20px;
 }
 
+.isoform{
+  cursor: pointer;
+}
+
 .axis {
   font: 14px sans-serif;
 }
 
 .x-local-axis {
   font: 10px sans-serif;
-  stroke-width: 0px;
+  stroke-width: 0;
   fill:none;
 }
 
@@ -164,6 +168,7 @@ div.tooltip {
   font-family: Garamond, sans-serif;
   font-weight: 600;
   fill: black;
+  cursor: pointer;
 }
 
 
