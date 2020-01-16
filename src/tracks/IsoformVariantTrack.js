@@ -418,10 +418,13 @@ export default class IsoformVariantTrack {
                       || (fmax <= innerChild.fmax && fmin >= innerChild.fmin)
                     ) {
                       let drawnVariant = true;
+                      let symbol_string = getVariantSymbol(variant);
                       const description = getVariantDescription(variant);
                       const consequence = description.consequence ? description.consequence : "UNKNOWN";
                       const consequenceColor = getColorForConsequence(consequence);
                       let descriptionHtml = renderVariantDescription(description);
+                      let del_width = x(fmax) - x(fmin);
+                      if(del_width<1){del_width = 1;}
                       if (type.toLowerCase() === 'deletion' || type.toLowerCase() === 'mnv') {
                         isoform.append('rect')
                           .attr('class', 'variant-deletion')
@@ -430,7 +433,7 @@ export default class IsoformVariantTrack {
                           .attr('z-index', 30)
                           .attr('fill', consequenceColor)
                           .attr('height', variant_height)
-                          .attr('width', x(fmax) - x(fmin))
+                          .attr('width', del_width)
                           .on("click", d => {
                             tooltipDiv.transition()
                               .duration(200)
@@ -447,7 +450,23 @@ export default class IsoformVariantTrack {
                             ;
 
                           })
-                          .datum({fmin: fmin, fmax: fmax});
+                          .on("mouseover", function(d){
+                            let theVariant = d.variant;
+                            d3.selectAll(".variant-deletion")
+                            .filter(function(d){return d.variant == theVariant})
+                              .style("stroke" , "black");
+                            //Need To do a filter here too...
+                            d3.select(this.parentNode).raise().selectAll(".variantLabel,.variantLabelBackround")
+                              .filter(function(d){return d.variant == theVariant})
+                              .style("opacity", 1);
+                          })
+                          .on("mouseout", function(d){
+                            d3.selectAll(".variant-deletion")
+                              .style("stroke" , null);
+                            d3.select(this.parentNode).selectAll(".variantLabel,.variantLabelBackround")
+                              .style("opacity",0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax, variant: symbol_string});
                       } else if (type.toLowerCase() === 'snv' || type.toLowerCase() === 'point_mutation') {
                         isoform.append('polygon')
                           .attr('class', 'variant-SNV')
@@ -470,7 +489,24 @@ export default class IsoformVariantTrack {
                               .text('Close')
                               .on('click', d => closeToolTip())
                           })
-                          .datum({fmin: fmin, fmax: fmax});
+                          .on("mouseover", function(d){
+                            console.log(this.parentNode);
+                            //console.log(d.variant);
+                            let theVariant = d.variant;
+                            d3.selectAll(".variant-SNV")
+                            .filter(function(d){return d.variant == theVariant})
+                              .style("stroke" , "black");
+                            d3.select(this.parentNode).raise().selectAll(".variantLabel,.variantLabelBackround")
+                              .filter(function(d){return d.variant == theVariant})
+                              .style("opacity", 1);
+                          })
+                          .on("mouseout", function(d){
+                            d3.selectAll(".variant-SNV")
+                              .style("stroke" , null);
+                            d3.select(this.parentNode).selectAll(".variantLabel,.variantLabelBackround")
+                              .style("opacity",0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax, variant: symbol_string});
                       }
                       else if (type.toLowerCase() === 'insertion') {
                         isoform.append('polygon')
@@ -494,7 +530,22 @@ export default class IsoformVariantTrack {
                               .text('Close')
                               .on('click', d => closeToolTip())
                           })
-                          .datum({fmin: fmin, fmax: fmax});
+                          .on("mouseover", function(d){
+                            let theVariant = d.variant;
+                            d3.selectAll(".variant-insertion")
+                            .filter(function(d){return d.variant == theVariant})
+                              .style("stroke" , "black");
+                            d3.select(this.parentNode).raise().selectAll(".variantLabel,.variantLabelBackround")
+                              .filter(function(d){return d.variant == theVariant})
+                              .style("opacity", 1);
+                          })
+                          .on("mouseout", function(d){
+                            d3.selectAll(".variant-insertion")
+                              .style("stroke" , null);
+                            d3.select(this.parentNode).selectAll(".variantLabel,.variantLabelBackround")
+                              .style("opacity",0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax, variant: symbol_string});
                       }
                       else if (type.toLowerCase() === 'delins'
                         || type.toLowerCase() === 'substitution'
@@ -521,7 +572,22 @@ export default class IsoformVariantTrack {
                               .text('Close')
                               .on('click', d => closeToolTip())
                           })
-                          .datum({fmin: fmin, fmax: fmax});
+                          .on("mouseover", function(d){
+                            let theVariant = d.variant;
+                            d3.selectAll(".variant-delins")
+                            .filter(function(d){return d.variant == theVariant})
+                              .style("stroke" , "black");
+                            d3.select(this.parentNode).raise().selectAll(".variantLabel,.variantLabelBackround")
+                              .filter(function(d){return d.variant == theVariant})
+                              .style("opacity", 1);
+                          })
+                          .on("mouseout", function(d){
+                            d3.selectAll(".variant-delins")
+                              .style("stroke" , null);
+                            d3.select(this.parentNode).selectAll(".variantLabel,.variantLabelBackround")
+                              .style("opacity",0);
+                          })
+                          .datum({fmin: fmin, fmax: fmax, variant: symbol_string});
                       }
                       else{
                         console.warn("type not found",type,variant);
@@ -530,14 +596,31 @@ export default class IsoformVariantTrack {
                       if(drawnVariant && showVariantLabel){
                         let symbol_string = getVariantSymbol(variant);
                         const symbol_string_length = symbol_string.length;
-                        isoform.append('text')
-                          .attr('class', 'variantLabel')
-                          .attr('fill', selected ? 'sandybrown' : consequenceColor)
-                          .attr('opacity', selected ? 1 : 0.5)
-                          .attr('height', isoform_title_height)
-                          .attr("transform", `translate(${x(fmin-(symbol_string_length/2.0*100))},${(variant_offset*2.2)- transcript_backbone_height})`)
-                          .text(symbol_string)
-                          .datum({fmin: featureChild.fmin});
+                        let x_offset = x(fmin-(symbol_string_length/2.0*100));
+                        if (x_offset<0){
+                          x_offset = 0;
+                        }
+
+                        var textbox = isoform.append('text')
+                            .attr('class', 'variantLabel')
+                            .attr('fill', selected ? 'sandybrown' : consequenceColor)
+                            .attr('opacity', 0)
+                            .attr('height', isoform_title_height)
+                            .attr("transform", `translate(${x_offset},${(variant_offset*2.2)- transcript_backbone_height})`)
+                            .text(symbol_string)
+                            .datum({fmin: featureChild.fmin, variant: symbol_string});
+                        var bbox = textbox.node().getBBox();
+                        isoform.append('rect').lower()
+                          .attr('class', 'variantLabelBackround')
+                          .attr('y',bbox.y)
+                          .attr('height',bbox.height+3)
+                          .attr('width',bbox.width+3)
+                          .attr("transform", `translate(${x_offset-1.5},${(variant_offset*2.2)- transcript_backbone_height-1.5})`)
+                          .attr("opacity",0)
+                          .datum({variant:symbol_string});
+
+
+
                       }
                   }
                   });

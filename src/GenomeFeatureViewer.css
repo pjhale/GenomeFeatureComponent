@@ -25,7 +25,7 @@ html, body {
   text-align: left;
 }
 
-div.tooltip {
+div.tooltip{
   position: absolute;
   text-align: center;
   width: 60px;
@@ -42,6 +42,18 @@ div.tooltip {
 .variant-label {
   stroke-width: 1px;
   color: black;
+}
+
+.variantLabel{
+  z-index: 100;
+}
+
+.variantLabelBackround{
+  fill:lightsteelblue;
+  border-radius: 8px;
+  rx: 8;
+  ry: 8;
+  z-index: 100;
 }
 
 .variant-insertion{
