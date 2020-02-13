@@ -34,7 +34,6 @@ export default class IsoformAndVariantTrack {
   DrawTrack() {
     let isoformData = this.trackData;
     let variantData = this.filterVariantData(this.variantData,this.variantFilter);
-    console.log(variantData);
     let viewer = this.viewer;
     let width = this.width;
     let showVariantLabel = this.showVariantLabel;
@@ -90,7 +89,7 @@ export default class IsoformAndVariantTrack {
     let variantContainer = viewer.append("g").attr("class", "variants track")
       .attr("transform", "translate(0,22.5)");
     //Append Invisible Rect to give space properly if only one track exists.
-    variantContainer.append('rect').style("opacity", 0).attr("height", 39).attr("width",width);
+    variantContainer.append('rect').style("opacity", 0).attr("height", VARIANT_TRACK_HEIGHT).attr("width",width);
 
     //need to build a new sortWeight since these can be dynamic
     let sortWeight = {};
@@ -135,6 +134,7 @@ export default class IsoformAndVariantTrack {
         let {type, fmax, fmin} = variant;
         let drawnVariant = true;
         let isPoints = false;
+        let viewerWidth = this.width;
         let symbol_string = getVariantSymbol(variant);
         const descriptions = getVariantDescriptions(variant);
         let descriptionHtml = renderVariantDescriptions(descriptions);
@@ -266,7 +266,8 @@ export default class IsoformAndVariantTrack {
             label_offset = x(fmin);}
 
           const symbol_string_length = symbol_string.length ? symbol_string.length : 1;
-          variantContainer.append('text')
+
+          let variant_label = variantContainer.append('text')
             .attr('class', 'variantLabel')
             .attr('fill', consequenceColor)
             .attr('opacity', 0)
@@ -277,6 +278,13 @@ export default class IsoformAndVariantTrack {
               renderTooltipDescription(tooltipDiv,descriptionHtml,closeToolTip);
             })
             .datum({fmin: fmin, variant: symbol_string});
+
+            let symbol_string_width = variant_label.node().getBBox().width;
+            if(parseFloat(symbol_string_width+label_offset)>viewerWidth){
+              let diff = parseFloat(symbol_string_width+label_offset-viewerWidth);
+              label_offset-=diff;
+              variant_label.attr("transform", "translate("+label_offset+",35)");
+            }
         }
       });
 
