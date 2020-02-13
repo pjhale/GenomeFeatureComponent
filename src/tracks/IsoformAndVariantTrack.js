@@ -34,12 +34,13 @@ export default class IsoformAndVariantTrack {
   DrawTrack() {
     let isoformData = this.trackData;
     let variantData = this.filterVariantData(this.variantData,this.variantFilter);
+    console.log(variantData);
     let viewer = this.viewer;
     let width = this.width;
     let showVariantLabel = this.showVariantLabel;
 
     // TODO: make configurable and a const / default
-    let MAX_ROWS = 10;
+    let MAX_ROWS = 9;
 
     let UTR_feats = ["UTR", "five_prime_UTR", "three_prime_UTR"];
     let CDS_feats = ["CDS"];
@@ -66,6 +67,7 @@ export default class IsoformAndVariantTrack {
     const ARROW_POINTS = '0,0 0,' + ARROW_HEIGHT + ' ' + ARROW_WIDTH + ',' + ARROW_WIDTH;
     const SNV_HEIGHT = 10;
     const SNV_WIDTH = 10;
+    const VARIANT_TRACK_HEIGHT = 40;//Not sure if this needs to be dynamic or not
 
     const insertion_points = (x) => {
       return `${x-(SNV_WIDTH/2.0)},${SNV_HEIGHT} ${x},0 ${x+(SNV_WIDTH/2.0)},${SNV_HEIGHT}`;
@@ -86,8 +88,9 @@ export default class IsoformAndVariantTrack {
 
     //Lets put this here so that the "track" part will give us extra space automagically
     let variantContainer = viewer.append("g").attr("class", "variants track")
-      .attr("transform", "translate(0,22.5)")
-      .attr("height", 40);
+      .attr("transform", "translate(0,22.5)");
+    //Append Invisible Rect to give space properly if only one track exists.
+    variantContainer.append('rect').style("opacity", 0).attr("height", 39).attr("width",width);
 
     //need to build a new sortWeight since these can be dynamic
     let sortWeight = {};
@@ -172,7 +175,7 @@ export default class IsoformAndVariantTrack {
             .attr('points', snv_points(x(fmin)))
             .attr('fill', consequenceColor)
             .attr('x', x(fmin))
-            .attr('transform', 'translate(0,0)')
+            .attr('transform', 'translate(0,'+VARIANT_HEIGHT+')')
             .attr('z-index', 30)
             .on("click", d => {
               renderTooltipDescription(tooltipDiv,descriptionHtml,closeToolTip);
@@ -200,7 +203,7 @@ export default class IsoformAndVariantTrack {
               .attr('points', insertion_points(x(fmin)))
               .attr('fill', consequenceColor)
               .attr('x', x(fmin))
-              .attr('transform', 'translate(0,0)')
+              .attr('transform', 'translate(0,'+VARIANT_HEIGHT+')')
               .attr('z-index', 30)
               .on("click", d => {
                 renderTooltipDescription(tooltipDiv,descriptionHtml,closeToolTip);
@@ -268,7 +271,7 @@ export default class IsoformAndVariantTrack {
             .attr('fill', consequenceColor)
             .attr('opacity', 0)
             .attr('height', ISOFORM_TITLE_HEIGHT)
-            .attr("transform", "translate("+label_offset+",30)")
+            .attr("transform", "translate("+label_offset+",35)")
             .html(symbol_string)
             .on("click", d => {
               renderTooltipDescription(tooltipDiv,descriptionHtml,closeToolTip);
@@ -516,7 +519,7 @@ export default class IsoformAndVariantTrack {
                 .append('text')
                 .attr('x', 10)
                 .attr('y', 10)
-                .attr("transform", "translate(0," + ((row_count * ISOFORM_HEIGHT) + 20 +heightBuffer) + ")")
+                .attr("transform", "translate(0," + ((row_count * ISOFORM_HEIGHT) + 20 +heightBuffer ) + ")")
                 .attr('fill', 'red')
                 .attr('opacity', 1)
                 .attr('height', ISOFORM_TITLE_HEIGHT)
@@ -537,7 +540,7 @@ export default class IsoformAndVariantTrack {
         .text('Overview of non-coding genome features unavailable at this time.');
     }
     // we return the appropriate height function
-    return (row_count * ISOFORM_HEIGHT) + heightBuffer;
+    return (row_count * ISOFORM_HEIGHT) + heightBuffer + VARIANT_TRACK_HEIGHT;
   }
 
   filterVariantData(variantData, variantFilter) {
